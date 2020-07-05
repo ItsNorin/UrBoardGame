@@ -2,13 +2,12 @@ extends Node
 
 export (int) var tileSize
 
-enum TILE_TYPE { EMPTY = 0, BASE, ROSETTE, CENTER_ROSETTE, L_PILE, R_PILE, L_GOAL, R_GOAL }
+enum TILE_TYPE { EMPTY = 0, BASE, ROSETTE, L_PILE, R_PILE, L_GOAL, R_GOAL }
 
 const Tiles = [
 	null,
 	preload("res://Board/baseTile.tscn"),
 	preload("res://Board/rosette.tscn"),
-	preload("res://Board/rosette_center.tscn"),
 	preload("res://Board/tilePile.tscn")
 ]
 
@@ -72,7 +71,7 @@ func _on_tile_clicked(tile:BaseTile):
 				swapTurns = true
 				madeValidMove = true
 				# don't swap turns if landing on a rosette
-				if type == TILE_TYPE.CENTER_ROSETTE || type == TILE_TYPE.ROSETTE:
+				if type == TILE_TYPE.ROSETTE:
 					swapTurns = false
 				
 	if swapTurns:
@@ -252,7 +251,7 @@ func createNewTile(x:int, y:int):
 	var type = tileType(x,y)
 	var currentTile:BaseTile
 	
-	currentTile = Tiles[min(type, TILE_TYPE.CENTER_ROSETTE+1)].instance()
+	currentTile = Tiles[min(type, TILE_TYPE.ROSETTE+1)].instance()
 	currentTile.xPos = x
 	currentTile.yPos = y
 	currentTile.position = Vector2(x*tileSize, y*tileSize)
@@ -273,10 +272,8 @@ func createNewTile(x:int, y:int):
 # Type of tile at given a x and y position on board
 func tileType(x:int, y:int):
 	if x >= 0 && x <= 2 && y >= 0 && y <= 7:
-		if (y == 1 || y == 7) && (x == 0 || x == 2):
+		if (y == 1 || y == 7) && (x == 0 || x == 2) || x == 1 && y == 4:
 			return TILE_TYPE.ROSETTE
-		elif x == 1 && y == 4:
-			return TILE_TYPE.CENTER_ROSETTE
 		elif y == 2:
 			if x == 0:
 				return TILE_TYPE.L_GOAL
