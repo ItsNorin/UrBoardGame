@@ -1,0 +1,27 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://Dice/DiceRoller.tscn" type="PackedScene" id=2]
+[ext_resource path="res://Board/GameBoard.gd" type="Script" id=3]
+
+[node name="Window" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Background" type="TextureRect" parent="."]
+margin_right = 576.0
+margin_bottom = 1024.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Board" type="Node2D" parent="."]
+position = Vector2( 102, 16 )
+script = ExtResource( 3 )
+tileSize = 124
+
+[node name="DiceRoller" parent="Board" instance=ExtResource( 2 )]
+position = Vector2( 527.789, -16 )
+scale = Vector2( 0.178, 0.178 )

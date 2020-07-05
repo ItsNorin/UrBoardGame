@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://Pieces/piece.tscn" type="PackedScene" id=1]
+
+[node name="yellow_piece" instance=ExtResource( 1 )]
+modulate = Color( 0.94902, 0.690196, 0.207843, 1 )
+color = "yellow"
