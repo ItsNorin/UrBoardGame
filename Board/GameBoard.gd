@@ -48,10 +48,16 @@ func _ready():
 # warning-ignore:return_value_discarded
 	diceRoller.connect("rolls_done", self, "_on_dice_roll_ready")
 	
-	currentTurn = randi() % 2 == 0
-	buildBoard()
-	initDice()
+	get_parent().get_node("Menu").connect("start_two_player", self, "_start_two_player")
 	
+	resetBoard()
+	
+	pass
+	
+func _start_two_player():
+	currentTurn = randi() % 2 == 0
+	initDice()
+	diceRoller.show()
 	pass
 	
 # When dice roll is ready,
@@ -98,9 +104,16 @@ func _on_tile_clicked(tile:BaseTile):
 		
 		if (leftSafe.back() as PileTile).pieceCount() == 7 || (rightSafe.back() as PileTile).pieceCount() == 7:
 			emit_signal("game_won", currentTurn)
-			
+			resetBoard()
+			_start_two_player()
 	pass
 	
+func resetBoard():
+	destroyBoard()
+	buildBoard()
+	diceRoller.hide()
+	pass
+
 func destroyBoard():
 	currentMoves.clear()
 	leftStart.clear()
@@ -308,4 +321,3 @@ func tileType(x:int, y:int):
 				return TILE_TYPE.R_PILE
 		return TILE_TYPE.BASE
 	return TILE_TYPE.EMPTY
-

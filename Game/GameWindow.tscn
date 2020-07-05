@@ -1,8 +1,32 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=15 format=2]
 
 [ext_resource path="res://Sounds/nenadsimic__menu-selection-click.wav" type="AudioStream" id=1]
 [ext_resource path="res://Dice/DiceRoller.tscn" type="PackedScene" id=2]
 [ext_resource path="res://Board/GameBoard.gd" type="Script" id=3]
+[ext_resource path="res://Fonts/OpenSans-SemiBold.ttf" type="DynamicFontData" id=4]
+[ext_resource path="res://Game/Blur.material" type="Material" id=5]
+[ext_resource path="res://Fonts/OpenSans-ExtraBold.ttf" type="DynamicFontData" id=6]
+[ext_resource path="res://Game/Menu.gd" type="Script" id=7]
+[ext_resource path="res://Game/ButtonHover.stylebox" type="StyleBox" id=8]
+[ext_resource path="res://Sounds/mastersdisaster__switch-on-livingroom.wav" type="AudioStream" id=9]
+
+[sub_resource type="DynamicFont" id=1]
+size = 80
+outline_size = 5
+outline_color = Color( 0, 0, 0, 1 )
+font_data = ExtResource( 6 )
+
+[sub_resource type="StyleBoxEmpty" id=2]
+
+[sub_resource type="StyleBoxEmpty" id=3]
+
+[sub_resource type="StyleBoxEmpty" id=4]
+
+[sub_resource type="DynamicFont" id=5]
+size = 32
+outline_size = 2
+outline_color = Color( 0.0156863, 0.0196078, 0.0627451, 1 )
+font_data = ExtResource( 4 )
 
 [node name="Window" type="Control"]
 anchor_right = 1.0
@@ -11,31 +35,101 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Background" type="TextureRect" parent="."]
+[node name="Background" type="ColorRect" parent="."]
 margin_right = 576.0
 margin_bottom = 1024.0
+color = Color( 0.192157, 0.262745, 0.372549, 1 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="Board" type="Node2D" parent="."]
+material = ExtResource( 5 )
 position = Vector2( 102, 16 )
 script = ExtResource( 3 )
 tileSize = 124
 
 [node name="DiceRoller" parent="Board" instance=ExtResource( 2 )]
-position = Vector2( -102, 1008 )
+position = Vector2( 511.763, -16 )
 scale = Vector2( 0.178, 0.178 )
 
 [node name="PiecePlaceSound" type="AudioStreamPlayer" parent="Board"]
-stream = ExtResource( 1 )
+stream = ExtResource( 9 )
 
-[node name="WinScreen" type="Node2D" parent="."]
-position = Vector2( 0, 277 )
-
-[node name="WinBanner" type="TextureRect" parent="WinScreen"]
-margin_right = 576.0
-margin_bottom = 277.0
+[node name="Menu" type="Control" parent="."]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -288.0
+margin_top = -512.0
+margin_right = 288.0
+margin_bottom = 512.0
+mouse_filter = 1
+script = ExtResource( 7 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[node name="BlurFilter" type="ColorRect" parent="Menu"]
+material = ExtResource( 5 )
+margin_right = 576.0
+margin_bottom = 1024.0
+mouse_filter = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="CenterContainer" type="CenterContainer" parent="Menu"]
+margin_right = 576.0
+margin_bottom = 1024.0
+mouse_filter = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Menu/CenterContainer"]
+margin_left = 56.0
+margin_top = 432.0
+margin_right = 519.0
+margin_bottom = 591.0
+
+[node name="Title" type="Label" parent="Menu/CenterContainer/VBoxContainer"]
+margin_right = 463.0
+margin_bottom = 110.0
+custom_fonts/font = SubResource( 1 )
+text = "Game of Ur"
+align = 1
+
+[node name="SinglePlayerButton" type="Button" parent="Menu/CenterContainer/VBoxContainer"]
+visible = false
+margin_top = 114.0
+margin_right = 463.0
+margin_bottom = 159.0
+custom_styles/hover = ExtResource( 8 )
+custom_styles/pressed = ExtResource( 8 )
+custom_styles/focus = SubResource( 2 )
+custom_styles/disabled = SubResource( 3 )
+custom_styles/normal = SubResource( 4 )
+custom_fonts/font = SubResource( 5 )
+action_mode = 0
+text = "Single Player"
+
+[node name="TwoPlayerButton" type="Button" parent="Menu/CenterContainer/VBoxContainer"]
+margin_top = 114.0
+margin_right = 463.0
+margin_bottom = 159.0
+custom_styles/hover = ExtResource( 8 )
+custom_styles/pressed = ExtResource( 8 )
+custom_styles/focus = SubResource( 2 )
+custom_styles/disabled = SubResource( 3 )
+custom_styles/normal = SubResource( 4 )
+custom_fonts/font = SubResource( 5 )
+action_mode = 0
+text = "Two Player"
+
+[node name="ButtonPlip" type="AudioStreamPlayer" parent="Menu"]
+stream = ExtResource( 1 )
+[connection signal="mouse_entered" from="Menu/CenterContainer/VBoxContainer/SinglePlayerButton" to="Menu" method="_play_button_plip"]
+[connection signal="mouse_entered" from="Menu/CenterContainer/VBoxContainer/TwoPlayerButton" to="Menu" method="_play_button_plip"]
+[connection signal="pressed" from="Menu/CenterContainer/VBoxContainer/TwoPlayerButton" to="Menu" method="_on_TwoPlayerButton_pressed"]

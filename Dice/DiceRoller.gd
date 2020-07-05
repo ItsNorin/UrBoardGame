@@ -56,9 +56,9 @@ func _on_roll_done(scoring:bool):
 	pass	
 
 func _input(event):
-	if event is InputEventMouseButton && event.is_pressed():
+	if event.is_action_pressed("ui_touch"):
 		if bounds.get_rect().has_point(get_local_mouse_position()):
-			if acceptClick:
+			if acceptClick && self.visible:
 				rollAll()
 			get_tree().set_input_as_handled()
 	pass

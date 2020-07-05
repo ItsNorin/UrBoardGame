@@ -1,0 +1,21 @@
+[remap]
+
+importer="wav"
+type="AudioStreamSample"
+path="res://.import/mastersdisaster__switch-on-livingroom.wav-8dc8ff53f2c7cb6aa5f41a76e39ac423.sample"
+
+[deps]
+
+source_file="res://Sounds/mastersdisaster__switch-on-livingroom.wav"
+dest_files=[ "res://.import/mastersdisaster__switch-on-livingroom.wav-8dc8ff53f2c7cb6aa5f41a76e39ac423.sample" ]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop=false
+compress/mode=0

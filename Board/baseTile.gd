@@ -26,10 +26,9 @@ func _ready():
 	pass # Replace with function body.
 
 func _input(event):
-	if event is InputEventMouseButton && event.is_pressed():
+	if event.is_action_pressed("ui_touch"):
 		if tileImage.get_rect().has_point(get_local_mouse_position()):
 			tileClicked()
-			get_tree().set_input_as_handled()
 	pass
 	
 func setHighlight(active:bool):
