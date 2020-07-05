@@ -11,10 +11,13 @@ var score:int = 0
 var rollDoneCount:int = 0
 var acceptClick:bool = false
 
+var rollingNoise:AudioStreamPlayer
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	label = get_node("Label")
 	bounds = get_node("ColorRect")
+	rollingNoise = get_node("rollingNoise")
 	for d in self.get_children():
 		if d is Die:
 			d.connect("rolling_done", self, "_on_roll_done")
@@ -39,6 +42,7 @@ func rollAll():
 	for d in self.get_children():
 		if d is Die:
 			d.roll()
+	rollingNoise.play()
 	pass
 
 func _on_roll_done(scoring:bool):
@@ -48,6 +52,7 @@ func _on_roll_done(scoring:bool):
 	if isScoreReady():
 		label.text = String(score)
 		emit_signal("rolls_done", score)
+		rollingNoise.stop()
 	pass	
 
 func _input(event):

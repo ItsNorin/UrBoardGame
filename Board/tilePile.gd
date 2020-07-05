@@ -22,14 +22,13 @@ export var yOffset:int = 64
 
 # Actual pile of pieces
 var pile = []
-var rng = RandomNumberGenerator.new()
 
 var pileRotation:float = 0
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	rng.randomize()
-	pileRotation = rng.randf_range(0,2*PI)
+	randomize()
+	pileRotation = rand_range(0,2*PI)
 	addPieces(pieceCountStart)
 	pass
 
@@ -51,7 +50,7 @@ func spreadPieces():
 # Adds a new piece to top of pile
 func addPiece(p:Piece):
 	# create new piece at given position
-	p.set_rotation(rng.randf_range(0, 2*PI)) # rotate piece randomly
+	p.set_rotation(rand_range(0, 2*PI)) # rotate piece randomly
 	pile.push_front(p)
 	add_child(p)
 	spreadPieces()

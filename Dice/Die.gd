@@ -23,17 +23,15 @@ export var rolling:bool
 var lastRollTime:float
 var timesRolled:int
 
-var rng = RandomNumberGenerator.new()
-
 func setRandomRoll():
 	# always 50/50 chance of die scoring
-	scoring = rng.randi_range(0,1)
+	scoring = randi() % 2
 	# display textures
 	if scoring:
-		self.texture = FramesScoring[rng.randi_range(0,1)]
+		self.texture = FramesScoring[randi() % 2]
 	else:
-		self.texture = FramesNotScoring[rng.randi_range(0,1)]
-	self.flip_h = rng.randi_range(0,1)
+		self.texture = FramesNotScoring[randi() % 2]
+	self.flip_h = randi() % 2
 	return scoring
 
 func roll():
@@ -42,7 +40,7 @@ func roll():
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	rng.randomize()
+	randomize()
 	setRandomRoll()
 	pass # Replace with function body.
 

@@ -1,5 +1,6 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=4 format=2]
 
+[ext_resource path="res://Sounds/nenadsimic__menu-selection-click.wav" type="AudioStream" id=1]
 [ext_resource path="res://Dice/DiceRoller.tscn" type="PackedScene" id=2]
 [ext_resource path="res://Board/GameBoard.gd" type="Script" id=3]
 
@@ -23,5 +24,18 @@ script = ExtResource( 3 )
 tileSize = 124
 
 [node name="DiceRoller" parent="Board" instance=ExtResource( 2 )]
-position = Vector2( 527.789, -16 )
+position = Vector2( -102, 1008 )
 scale = Vector2( 0.178, 0.178 )
+
+[node name="PiecePlaceSound" type="AudioStreamPlayer" parent="Board"]
+stream = ExtResource( 1 )
+
+[node name="WinScreen" type="Node2D" parent="."]
+position = Vector2( 0, 277 )
+
+[node name="WinBanner" type="TextureRect" parent="WinScreen"]
+margin_right = 576.0
+margin_bottom = 277.0
+__meta__ = {
+"_edit_use_anchors_": false
+}

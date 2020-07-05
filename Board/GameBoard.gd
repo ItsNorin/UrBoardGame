@@ -1,5 +1,8 @@
 extends Node
 
+signal game_won
+
+
 export (int) var tileSize
 
 enum TILE_TYPE { EMPTY = 0, BASE, ROSETTE, L_PILE, R_PILE, L_GOAL, R_GOAL }
@@ -24,29 +27,36 @@ var center = []
 var leftSafe = []
 var rightSafe = []
 
-var clickBox:RectangleShape2D
-
 # false: left's turn
 # true:  right's turn
 var currentTurn:bool = true
 var rollReady:bool = false
 var currentRoll:int = 0
 
+var leftWinCount:int = 0
+var rightWinCount:int = 0
+
 var currentMoves = []
+
+var piecePlaceSound:AudioStreamPlayer
 
 func _ready():
 	randomize()
-	buildBoard()
+	piecePlaceSound = get_node("PiecePlaceSound")
 	
 	diceRoller = get_node("DiceRoller")
+# warning-ignore:return_value_discarded
 	diceRoller.connect("rolls_done", self, "_on_dice_roll_ready")
+	
+	currentTurn = randi() % 2 == 0
+	buildBoard()
 	initDice()
 	
 	pass
 	
 # When dice roll is ready,
 func _on_dice_roll_ready(score:int):
-	print("rolled: " + String(score))
+	#print("rolled: " + String(score))
 	# Find all tiles with current player pieces, highlight them
 	currentMoves = getValidTiles(score)
 	setTileHighlight(currentMoves, true)
@@ -55,7 +65,7 @@ func _on_dice_roll_ready(score:int):
 	pass
 
 func _on_tile_clicked(tile:BaseTile):
-	print(Vector2(tile.xPos,tile.yPos))
+	#print(Vector2(tile.xPos,tile.yPos))
 	var swapTurns = false
 	var madeValidMove = false
 	# if roll is ready 
@@ -73,6 +83,9 @@ func _on_tile_clicked(tile:BaseTile):
 				# don't swap turns if landing on a rosette
 				if type == TILE_TYPE.ROSETTE:
 					swapTurns = false
+					
+				# only play sound when a piece is moved
+				piecePlaceSound.play()
 				
 	if swapTurns:
 		currentTurn = !currentTurn
@@ -82,12 +95,20 @@ func _on_tile_clicked(tile:BaseTile):
 		# end of turn board cleanup
 		setTileHighlight(currentMoves, false)
 		currentMoves.clear()
+		
+		if (leftSafe.back() as PileTile).pieceCount() == 7 || (rightSafe.back() as PileTile).pieceCount() == 7:
+			emit_signal("game_won", currentTurn)
+			
 	pass
 	
-# Called every frame. 'delta' is the elapsed time in seconds since the previous frame.
-#func _process(delta):
-	#testMoves(round(rand_range(0,1))*2, delta)
-	#pass
+func destroyBoard():
+	currentMoves.clear()
+	leftStart.clear()
+	leftSafe.clear()
+	rightStart.clear()
+	rightSafe.clear()
+	center.clear()
+	pass
 
 func initDice():
 	rollReady = false
@@ -265,6 +286,7 @@ func createNewTile(x:int, y:int):
 	if type == TILE_TYPE.L_PILE || type == TILE_TYPE.R_PILE:
 		(currentTile as PileTile).addPieces(7)
 	
+# warning-ignore:return_value_discarded
 	currentTile.connect("tile_clicked", self, "_on_tile_clicked")
 	
 	return currentTile
