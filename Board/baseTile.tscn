@@ -2,7 +2,7 @@
 
 [ext_resource path="res://Board/base_tile.svg" type="Texture" id=1]
 [ext_resource path="res://Board/baseTile.gd" type="Script" id=2]
-[ext_resource path="res://Board/highlight.svg" type="Texture" id=3]
+[ext_resource path="res://Board/highlight_stronger.svg" type="Texture" id=3]
 
 [node name="baseTile" type="Node2D"]
 script = ExtResource( 2 )
