@@ -7,6 +7,8 @@ signal tile_clicked
 export var pieceXOffset:int = 64
 export var pieceYOffset:int = 64
 
+export var tileSize:int = 124
+
 var piece:Piece = null
 
 # tile's position on board
@@ -55,17 +57,21 @@ func getPiece() -> Piece:
 func addPiece(p:Piece) -> bool:
 	if getState() == null:
 		piece = p
-		piece.position = Vector2(pieceXOffset, pieceYOffset)
-		add_child(piece)
 		return true
 	return false
+
+func getOffset() -> Vector2:
+	return Vector2(pieceXOffset, pieceYOffset)
+
+func getTileBasePos() -> Vector2:
+	return Vector2(xPos*tileSize, yPos*tileSize)
+
 
 # remove a piece from tile, returns removed piece
 func removePiece() -> Piece:
 	if getState() == null:
 		return null
 	var p = piece
-	remove_child(piece)
 	self.piece = null
 	return p
 

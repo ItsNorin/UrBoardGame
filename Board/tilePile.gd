@@ -10,9 +10,6 @@ const PieceTypes = [
 # Type of piece
 export var pieceType:int = 0
 
-# Number of pieces in pile
-export var pieceCountStart:int = 0
-
 # How far pieces will spread in pixels
 export var spread:float = 30
 
@@ -29,7 +26,6 @@ var pileRotation:float = 0
 func _ready():
 	randomize()
 	pileRotation = rand_range(0,2*PI)
-	addPieces(pieceCountStart)
 	pass
 
 # Evenly distribute all pieces
@@ -44,7 +40,7 @@ func spreadPieces():
 		if i < n - borderPoints:
 			radius *= sqrt(i+.5)/sqrt(n-(borderPoints+1)/2)
 		var piece:Piece = pile[i]
-		piece.position = Vector2(xOffset + radius*cos(theta), yOffset + radius*sin(theta))
+		piece.moveTo(getOffset() + getTileBasePos() + Vector2(radius*cos(theta), radius*sin(theta)))
 	pass
 
 # Adds a new piece to top of pile
@@ -52,20 +48,12 @@ func addPiece(p:Piece):
 	# create new piece at given position
 	p.set_rotation(rand_range(0, 2*PI)) # rotate piece randomly
 	pile.push_front(p)
-	add_child(p)
 	spreadPieces()
-	pass
-	
-# Add "count" pieces to pile
-func addPieces(count:= 1):
-	for _n in range(count):
-		addPiece(PieceTypes[pieceType].instance())
 	pass
 
 func removePiece() -> Piece:
 	var p = pile.front()
 	pile.pop_front()
-	remove_child(p)
 	spreadPieces()
 	return p
 

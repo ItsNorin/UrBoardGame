@@ -14,6 +14,11 @@ const Tiles = [
 	preload("res://Board/tilePile.tscn")
 ]
 
+const PieceTypes = [
+	preload("res://Pieces/blue_piece.tscn"),
+	preload("res://Pieces/yellow_piece.tscn")
+]
+
 var diceRoller:DiceRoller
 
 # positions for dice roller on left/right side of screen
@@ -172,6 +177,7 @@ func movePiece(x:int, y:int, distance:int):
 	# prepare to swap pieces
 	var piece = tileA.getPiece()
 	var pieceB = null
+		
 	# move piece to new tile
 	piece = tileA.removePiece()
 	if tileType(tileB.xPos, tileB.yPos) != TILE_TYPE.L_GOAL && tileType(tileB.xPos, tileB.yPos) != TILE_TYPE.R_GOAL:
@@ -179,8 +185,15 @@ func movePiece(x:int, y:int, distance:int):
 # warning-ignore:return_value_discarded
 	tileB.addPiece(piece)
 	capturePiece(pieceB)
+	
+	piece.moveTo(tileB.getTileBasePos() + tileB.getOffset())
+	# return piece to starting pile
+	if pieceB != null:
+		capturePiece(pieceB)
+	
 	return tileType(tileB.xPos, tileB.yPos)
 
+# return piece to its starting tile
 func capturePiece(piece:Piece):
 	if piece == null:
 		return
@@ -190,7 +203,6 @@ func capturePiece(piece:Piece):
 		"yellow":
 			rightStart[0].addPiece(piece)
 	pass
-
 
 # true if any of given tiles have moves for given distance
 func hasMoves(tiles, dist:int) -> bool:
@@ -203,6 +215,8 @@ func hasMoves(tiles, dist:int) -> bool:
 	
 # True if piece can move to given tile
 func canMove(x:int, y:int, dist:int) -> bool:
+	if dist == 0:
+		return false
 	var tile = getTile(x, y)
 	var newTile:BaseTile = getTileDisplaced(x, y, dist)
 	if newTile == null:
@@ -290,6 +304,7 @@ func createNewTile(x:int, y:int):
 	currentTile.yPos = y
 	currentTile.position = Vector2(x*tileSize, y*tileSize)
 	add_child(currentTile)
+	move_child(currentTile, 0)
 	
 	if type == TILE_TYPE.L_PILE || type == TILE_TYPE.L_GOAL:
 		(currentTile as PileTile).pieceType = 0
@@ -297,7 +312,12 @@ func createNewTile(x:int, y:int):
 		(currentTile as PileTile).pieceType = 1
 
 	if type == TILE_TYPE.L_PILE || type == TILE_TYPE.R_PILE:
-		(currentTile as PileTile).addPieces(7)
+		for _i in range(7):
+			var temp:Piece = PieceTypes[currentTile.pieceType].instance()
+			temp.position = currentTile.getTileBasePos() + currentTile.getOffset()
+			add_child(temp)
+			move_child(temp, get_child_count() - 1)
+			currentTile.addPiece(temp)
 	
 # warning-ignore:return_value_discarded
 	currentTile.connect("tile_clicked", self, "_on_tile_clicked")
